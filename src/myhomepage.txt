@@ -1,0 +1,15 @@
+新しいBlogツールをつくってみた
+
+正直Web上で更新するとかだるかったし，
+画像とかのアップロード先がバラけるのも面倒だったしで，
+既存のBlogツールは俺に合わないと思いJekyllとかを試してみたんですが
+挙動が謎だったので自作ツールをつくりました．
+
+名前はmyhomepage
+
+おれのホームページのためのツールです
+
+rakeするといろいろファイルが作られてrsyncとかでサーバと同期するといいいい感じ
+です
+<a
+href="http://github.com/yayugu/myhomepage">http://github.com/yayugu/myhomepage</a>

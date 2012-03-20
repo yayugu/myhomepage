@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="application/html; charset=UTF-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta http-equiv="Content-Script-Type" content="text/javascript" />
+    <title>Sinatra超完全解説 (2) テンプレート - やゆぐ</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link href="/index.atom" rel="alternate" title="Sinatra超完全解説 (2) テンプレート" type="application/atom+xml" />
+    <link rel="stylesheet" href="/theme/one-column-neue/style.css" type="text/css" />
+    <script type="text/javascript">var _gaq=_gaq||[];_gaq.push(['_setAccount','UA-27322025-1']);_gaq.push(['_trackPageview']);(function(){var ga=document.createElement('script');ga.type='text/javascript';ga.async=true;ga.src=('https:'==document.location.protocol?'https://ssl':'http://www')+'.google-analytics.com/ga.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(ga,s);})();</script>
+  </head>
+  <body>
+    <div id="header">
+      <h1><a href="/">やゆぐ</a></h1>
+      <span class="description">組版・タイポグラフィ・Web<br/>
+Twitter: <a href="http://twitter.com/yayugu">@yayugu</a><br/>
+旧ブログ: <a href="http://d.hatena.ne.jp/yayugu">yayuguのにっき</a></span>
+    </div>
+    <div id="content">
+      <div id="main">
+        <div class="section article">
+  <div class="header">
+    <h1>Sinatra超完全解説 (2) テンプレート</h1>
+    <div class="info">
+      <span class="date">2011/12/05 21:00:00</span>
+      
+      
+      <span class="tags"><ul class="tags"><li class="tag"><a href="/tags/ruby/">ruby</a></li><li class="tag"><a href="/tags/sinatra/">sinatra</a></li></ul></span>
+      
+    </div>
+  </div>
+  <div class="body">
+    <p>前回:<a href="http://moji.yayugu.net/sinatra01">Sinatra超完全解説 (1) Classic Style と Modular Application</a></p>
+
+<p>Sinatraの特徴の一つはviewの作成がかんたんなことです．</p>
+
+<p>例えば<code>'/hello/:name'</code>にアクセスされたとき，<code>views/hello.erb</code>というviewを描画したい場合は以下のように記述できます．</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre># views/hello.erbで
+<span class="tag">&lt;html&gt;</span>
+Hello, <span class="error">&lt;</span>%= @name %<span class="error">&gt;</span>!
+<span class="tag">&lt;/html&gt;</span>
+</pre></div>
+</div>
+</div>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="comment"># app.rbで</span>
+get <span class="string"><span class="delimiter">'</span><span class="content">/hello/:name</span><span class="delimiter">'</span></span> <span class="keyword">do</span>
+  <span class="instance-variable">@name</span> = params[<span class="symbol">:name</span>]
+  erb hello
+<span class="keyword">end</span>
+</pre></div>
+</div>
+</div>
+
+<p>これで<code>/hello/yayugu</code>にアクセスすると<code>Hello, yayugu!</code>が返ってきます．</p>
+
+<p>かんたんですね！</p>
+
+<h2 id="section">テンプレートの主な機能</h2>
+<ul>
+  <li>ファイルをテンプレートエンジンで処理し，結果を<em>String</em>で返します．</li>
+  <li>いろいろなテンプレートエンジンが使えます．Erb, Haml, Sass, Markdown, Slim, CoffeeScript</li>
+  <li>viewsにあるファイルだけでなくStringを直接渡すこともできます</li>
+</ul>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="instance-variable">@name</span> = <span class="string"><span class="delimiter">&quot;</span><span class="content">world</span><span class="delimiter">&quot;</span></span>
+erb <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, &lt;%= @name %&gt;!</span><span class="delimiter">&quot;</span></span> <span class="comment">#=&gt; &quot;Hello, world!&quot;</span>
+</pre></div>
+</div>
+</div>
+
+<ul>
+  <li>layoutという特別なテンプレートがあります．明示的に設定したlayoutや，layoutという名前のついたファイルはテンプレートがレンダリングされるたびに呼ばれ，yieldすると処理が終わった文字列が取得できます．つまり</li>
+</ul>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>template <span class="symbol">:layout</span> <span class="keyword">do</span>
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;html&gt;&lt;%= yield %&gt;&lt;/html&gt;</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">end</span>
+
+get <span class="string"><span class="delimiter">'</span><span class="content">/</span><span class="delimiter">'</span></span> <span class="keyword">do</span>
+  erb <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, world!</span><span class="delimiter">&quot;</span></span> <span class="comment">#=&gt; &quot;&lt;html&gt;Hello, world!&lt;/html&gt;</span>
+<span class="keyword">end</span>
+</pre></div>
+</div>
+</div>
+
+<p>ほかにもいろいろ．</p>
+
+<h2 id="section-1">実装</h2>
+<p>という訳で実装を読みます</p>
+
+<h3 id="section-2">大まかな流れ</h3>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="comment"># lib/sinatra/base.rb</span>
+
+  <span class="keyword">module</span> <span class="class">Templates</span>
+    <span class="keyword">def</span> <span class="function">initialize</span>
+      <span class="keyword">super</span>
+      <span class="instance-variable">@default_layout</span> = <span class="symbol">:layout</span>
+    <span class="keyword">end</span>
+
+    <span class="keyword">def</span> <span class="function">erb</span>(template, options={}, locals={})
+      render <span class="symbol">:erb</span>, template, options, locals
+    <span class="keyword">end</span>
+
+    <span class="keyword">def</span> <span class="function">haml</span>(template, options={}, locals={})
+      render <span class="symbol">:haml</span>, template, options, locals
+    <span class="keyword">end</span>
+
+    <span class="keyword">def</span> <span class="function">sass</span>(template, options={}, locals={})
+      options.merge! <span class="symbol">:layout</span> =&gt; <span class="predefined-constant">false</span>, <span class="symbol">:default_content_type</span> =&gt; <span class="symbol">:css</span>
+      render <span class="symbol">:sass</span>, template, options, locals
+    <span class="keyword">end</span>
+
+    <span class="comment"># (中略)</span>
+
+    <span class="keyword">def</span> <span class="function">coffee</span>(template, options={}, locals={})
+      options.merge! <span class="symbol">:layout</span> =&gt; <span class="predefined-constant">false</span>, <span class="symbol">:default_content_type</span> =&gt; <span class="symbol">:js</span>
+      render <span class="symbol">:coffee</span>, template, options, locals
+    <span class="keyword">end</span>
+</pre></div>
+</div>
+</div>
+
+<p>erb, hamlといったメソッドが定義されています．これらは基本的にrenderというメソッドに処理を丸投げしています．ただしスタイルシートなどではlayoutの適用を行わないなど，細かいオプションを調整していますね．</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>  private
+    <span class="comment"># 長いのでものすごく簡略化</span>
+    <span class="keyword">def</span> <span class="function">render</span>(engine, data, options={}, locals={}, &amp;block)
+      <span class="comment"># 中略．オプション処理</span>
+
+      <span class="comment"># テンプレートを用意して，</span>
+      template        = compile_template(engine, data, options, views)
+
+      <span class="comment"># レンダリングする</span>
+      output          = template.render(scope, locals, &amp;block)
+
+      output
+    <span class="keyword">end</span>
+
+    <span class="comment"># テンプレートの用意</span>
+    <span class="keyword">def</span> <span class="function">compile_template</span>(engine, data, options, views)
+      <span class="comment"># レンダリングにはTiltを使う</span>
+      template = <span class="constant">Tilt</span>[engine]
+
+      <span class="keyword">case</span> data
+      <span class="comment"># 引数がシンボルならviewsから探してくる</span>
+      <span class="keyword">when</span> <span class="constant">Symbol</span>
+        <span class="instance-variable">@preferred_extension</span> = engine.to_s
+        <span class="comment"># &quot;#{views}/{data}.#{@preferred_extension}&quot;っぽいファイル名を検索</span>
+        find_template(views, data, template) <span class="keyword">do</span> |file|
+          path ||= file <span class="comment"># keep the initial path rather than the last one</span>
+          <span class="keyword">if</span> found = <span class="constant">File</span>.exists?(file)
+            path = file
+            <span class="keyword">break</span>
+          <span class="keyword">end</span>
+        <span class="keyword">end</span>
+        template.new(path, <span class="integer">1</span>, options) <span class="comment"># ココ重要</span>
+      
+      <span class="comment"># 文字列などならそのまま</span>
+      <span class="keyword">when</span> <span class="constant">Proc</span>, <span class="constant">String</span>
+        body = data.is_a?(<span class="constant">String</span>) ? <span class="constant">Proc</span>.new { data } : data
+        path, line = settings.caller_locations.first
+        template.new(path, line.to_i, options, &amp;body) <span class="comment"># ココ重要</span>
+      <span class="keyword">end</span>
+    <span class="keyword">end</span>
+  <span class="keyword">end</span>
+</pre></div>
+</div>
+</div>
+
+<p>renderメソッドは複雑ですが，大きな流れはこうです．</p>
+
+<ol>
+  <li>引数がシンボルならそのファイルのパスを探す，文字列ならそのまま</li>
+  <li>Tiltなるものに突っ込む</li>
+  <li>あら不思議テンプレートエンジンでレンダリングされた文字列が！</li>
+</ol>
+
+<p>SinatraさんはTiltにほぼ丸投げしているだけでした．Tiltはテンプレートエンジンを抽象化して扱えるライブラリです．APIが<strike>使いづらい</strike>少し変わっているので知りたい人はここを見ましょう
+<a href="https://github.com/rtomayko/tilt">https://github.com/rtomayko/tilt</a></p>
+
+<p><br />
+ところでviewsのなかにディレクトリをつくり<code>views/foo/bar.erb</code>といったファイルを作るのはよくあることです．そのようなときの書き方には注意が必要です．引数がSymbolの場合のみviewsからファイルを探してくれます．</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="comment"># まちがい</span>
+<span class="comment"># 'foo/bar'という文字列そのものをerbされてしまう</span>
+erb <span class="string"><span class="delimiter">'</span><span class="content">foo/bar</span><span class="delimiter">'</span></span> <span class="comment">#=&gt; &quot;foo/bar&quot;</span>
+
+<span class="comment"># せいかい</span>
+erb <span class="string"><span class="delimiter">'</span><span class="content">foo/bar</span><span class="delimiter">'</span></span>.to_sym
+erb <span class="symbol"><span class="symbol">:</span><span class="delimiter">'</span><span class="content">foo/bar</span><span class="delimiter">'</span></span>
+</pre></div>
+</div>
+</div>
+
+<h3 id="layout">layout</h3>
+<p>layoutに関する部分を抜き出します．</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>    <span class="keyword">def</span> <span class="function">render</span>(engine, data, options={}, locals={}, &amp;block)
+      <span class="comment"># layoutに何を使うかの指定. </span>
+      layout          = options.delete(<span class="symbol">:layout</span>)
+
+      <span class="comment"># 特に指定がなければデフォルトのものを使う</span>
+      <span class="comment"># falseなら使わない </span>
+      layout          = <span class="instance-variable">@default_layout</span> <span class="keyword">if</span> layout.nil? <span class="keyword">or</span> layout == <span class="predefined-constant">true</span>
+
+      <span class="comment"># layoutをどのテンプレートエンジンで処理するか指定できる</span>
+      <span class="comment"># 特に指定がなければメイン部分と同じもので処理！</span>
+      layout_engine   = options.delete(<span class="symbol">:layout_engine</span>) || engine
+
+      template        = compile_template(engine, data, options, views)
+      output          = template.render(scope, locals, &amp;block)
+
+      <span class="comment"># layoutを使うとき</span>
+      <span class="keyword">if</span> layout
+        <span class="comment"># 再帰的にrenderを呼ぶ</span>
+        <span class="comment"># ブロックとしてoutputを与えることでyieldできるように</span>
+        options = options.merge(<span class="symbol">:layout</span> =&gt; <span class="predefined-constant">false</span>)
+        <span class="keyword">return</span> render(layout_engine, layout, options, locals) { output }
+      <span class="keyword">end</span>
+</pre></div>
+</div>
+</div>
+
+<p>layoutも再帰的にrenderで処理されています．またrenderにブロックを渡すとyieldできるので</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>render(<span class="symbol">:erb</span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">&lt;%= yield %&gt;world</span><span class="delimiter">&quot;</span></span>) { <span class="string"><span class="delimiter">'</span><span class="content">Super</span><span class="delimiter">'</span></span> } <span class="comment">#=&gt; &quot;Superworld&quot;</span>
+</pre></div>
+</div>
+</div>
+
+<p>のようにlayout以外のテンプレートでもブロックとして渡たせばyieldできます．</p>
+
+<p>layoutを処理するテンプレートエンジンは基本的にメインのテンプレートと同じになるので，layoutがhamlでメインのテンプレートがerbの時は，</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>erb <span class="symbol">:hoge</span>, <span class="symbol">:layout_engine</span> =&gt; <span class="symbol">:haml</span>
+</pre></div>
+</div>
+</div>
+
+<p>こんなふうに指定する必要があります．ダサいですね．</p>
+
+<h3 id="section-3">スコープ</h3>
+<p>皆さんが謎に思っているだろうことの一つがスコープです．私も謎でした．</p>
+
+<p>普通の変数はテンプレート側では使えないのに@つきの変数(インスタンス変数!)だとなぜか使えてしまいます．では先程のrenderメソッドのスコープに関わる箇所を見てみましょう．</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>    <span class="keyword">def</span> <span class="function">render</span>(engine, data, options={}, locals={}, &amp;block)
+      <span class="comment"># オプションで指定したオブジェクトかselfをスコープにする </span>
+      scope = options.delete(<span class="symbol">:scope</span>) || <span class="predefined-constant">self</span>
+      
+      <span class="comment"># 指定したスコープでレンダリング</span>
+      output = template.render(scope, locals, &amp;block)
+</pre></div>
+</div>
+</div>
+
+<p>ここでのselfはSinatra::Baseを継承したクラスのインスタンスです．詳しくは前回の<a href="http://moji.yayugu.net/sinatra01">Sinatra超完全解説 (1) Classic Style と Modular Application</a>を参照してもらうとして，簡単にいうと<code>get '/' do</code>とか書いてるところですね</p>
+
+<p>なんでオブジェクトを渡すとその中をスコープとしてくれるのかはややこしいので別記事にしました．</p>
+
+<p><a href="http://moji.yayugu.net/5">TiltとUnboundMethod#bind</a></p>
+
+<h2 id="section-4">その他</h2>
+<p>以上からできること，できないことがわかってきます．</p>
+
+<h3 id="section-5">できること</h3>
+<ul>
+  <li>テンプレートエンジンのチェイン</li>
+</ul>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="comment"># hoge.scss.erb をerbしたあとにscssする</span>
+<span class="comment"># 拡張子がerbなので編集しづらい？</span>
+scss(erb(<span class="symbol"><span class="symbol">:</span><span class="delimiter">'</span><span class="content">hoge.css</span><span class="delimiter">'</span></span>, <span class="symbol">:layout</span> =&gt; <span class="predefined-constant">false</span>))
+
+<span class="comment"># hoge.erb.scss.css をerbしたあとにscssする. Rails風</span>
+<span class="comment"># このままだと美しくないのでヘルパーメソッドをつくろう</span>
+template = <span class="constant">File</span>.join(views, <span class="string"><span class="delimiter">'</span><span class="content">hoge.erb.scss.css</span><span class="delimiter">'</span></span>).read
+scss(erb(<span class="constant">File</span>.read(template, <span class="symbol">:layout</span> =&gt; <span class="predefined-constant">false</span>))
+</pre></div>
+</div>
+</div>
+
+<ul>
+  <li>多重layout (多重yield)</li>
+</ul>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="comment"># inner_layout.erbを用意しておく．</span>
+
+<span class="comment"># :hoge → :inner_layout → :layout</span>
+<span class="comment"># の順で包まれて処理される</span>
+
+<span class="comment"># これもヘルパーメソッドをつくろう</span>
+
+render(<span class="symbol">:erb</span>, inner_layout) <span class="keyword">do</span> 
+  render(<span class="symbol">:erb</span>, <span class="symbol">:hoge</span>, <span class="symbol">:layout</span> =&gt; <span class="predefined-constant">false</span>)
+<span class="keyword">end</span>
+</pre></div>
+</div>
+</div>
+
+<ul>
+  <li>controllerを別クラスにしてそのスコープでviewをレンダリング</li>
+</ul>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>get <span class="string"><span class="delimiter">'</span><span class="content">/entry</span><span class="delimiter">'</span></span> <span class="keyword">do</span>
+  erb <span class="symbol">:hoge</span>, <span class="symbol">:scope</span> =&gt; entry_controller
+<span class="keyword">end</span>
+</pre></div>
+</div>
+</div>
+
+<h3 id="section-6">できないこと</h3>
+<ul>
+  <li>拡張子からのテンプレートエンジンの自動判別<br /> → Padrino::Routingを組み込むとできます</li>
+  <li>拡張子のチェインからのテンプレートエンジンの自動判別(hoge.erb.scss.cssとか)<br /> → Padrino::Routingでもできない<br /> → 自分でかこう</li>
+</ul>
+
+<h2 id="section-7">まとめ</h2>
+<ul>
+  <li>sinatraのテンプレート処理は便利だが万能ではない</li>
+  <li>テンプレートは同じクラスの別メソッド的なスコープで実行されている……<a href="http://moji.yayugu.net/5">っぽい</a></li>
+</ul>
+
+  </div>
+  <div class="admin-footer">
+    
+  </div>
+  <!-- X:S ZenBackWidget --><script type="text/javascript">document.write(unescape("%3Cscript")+" src='http://widget.zenback.jp/?base_uri=http%3A//moji.yayugu.net&nsid=93200937694265985%3A%3A100854354667410348&rand="+Math.ceil((new Date()*1)*Math.random())+"' type='text/javascript'"+unescape("%3E%3C/script%3E"));</script><!-- X:E ZenBackWidget -->
+
+  <div class="comment-wrap">
+    
+
+    <div id="comment_form">
+      <h4 class="comment">コメント</h4>
+<form action="/sinatra02" id="comment_form" method="post">
+  <script type="text/javascript">
+    //<![CDATA[
+      document.write('<input type="hidden" name="check" value="check" />');
+    //]]>
+  </script>
+  <p>
+    <label for="comment_name">名前</label>
+    <br />
+    <input id="comment_name" name="comment[name]" type="text" />
+  </p>
+  <p>
+    <label for="comment_homepage">ホームページ</label>
+    (オプション)
+    <br />
+    <input id="comment_homepage" name="comment[homepage]" type="text" />
+  </p>
+  <p>
+    <label for="comment_body">本文</label>
+    <br />
+    <textarea cols="40" id="comment_body" name="comment[body]" rows="10"></textarea>
+  </p>
+  <input class="button" type="submit" value="コメントする" />
+</form>
+
+    </div>
+  </div>
+</div>
+
+      </div>
+    </div>
+    <div id="footer">
+      <div>
+        
+        <span><a href="/tags/ruby/">ruby</a></span>
+        
+        <span><a href="/tags/sinatra/">sinatra</a></span>
+        
+        <span><a href="/tags/本/">本</a></span>
+        
+        <span><a href="/tags/本棚/">本棚</a></span>
+        
+      </div>
+      <div>
+        
+        <span><a href="/2012/01/">2012/01</a></span>
+        
+        <span><a href="/2011/12/">2011/12</a></span>
+        
+        <span><a href="/2011/11/">2011/11</a></span>
+        
+      </div>
+      <div>
+        <a href="/index.atom">Feed</a>
+      </div>
+      <form action="/search/" method="get">
+        <input type="text" name="query" class="text_field" />
+        <button class="submit" onclick="submit()">Search</button>
+      </form>
+      <div class="poweredby">powered by <a href="http://github.com/komagata/lokka">Lokka</a></div>
+    </div>
+    
+  </body>
+</html>
+

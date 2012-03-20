@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="application/html; charset=UTF-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta http-equiv="Content-Script-Type" content="text/javascript" />
+    <title>Sinatra超完全解説 (1) Classic Style と Modular Application - やゆぐ</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link href="/index.atom" rel="alternate" title="Sinatra超完全解説 (1) Classic Style と Modular Application" type="application/atom+xml" />
+    <link rel="stylesheet" href="/theme/one-column-neue/style.css" type="text/css" />
+    <script type="text/javascript">var _gaq=_gaq||[];_gaq.push(['_setAccount','UA-27322025-1']);_gaq.push(['_trackPageview']);(function(){var ga=document.createElement('script');ga.type='text/javascript';ga.async=true;ga.src=('https:'==document.location.protocol?'https://ssl':'http://www')+'.google-analytics.com/ga.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(ga,s);})();</script>
+  </head>
+  <body>
+    <div id="header">
+      <h1><a href="/">やゆぐ</a></h1>
+      <span class="description">組版・タイポグラフィ・Web<br/>
+Twitter: <a href="http://twitter.com/yayugu">@yayugu</a><br/>
+旧ブログ: <a href="http://d.hatena.ne.jp/yayugu">yayuguのにっき</a></span>
+    </div>
+    <div id="content">
+      <div id="main">
+        <div class="section article">
+  <div class="header">
+    <h1>Sinatra超完全解説 (1) Classic Style と Modular Application</h1>
+    <div class="info">
+      <span class="date">2011/11/27 21:00:00</span>
+      
+      
+      <span class="tags"><ul class="tags"><li class="tag"><a href="/tags/ruby/">ruby</a></li><li class="tag"><a href="/tags/sinatra/">sinatra</a></li></ul></span>
+      
+    </div>
+  </div>
+  <div class="body">
+    <p>Sinatraはとてもシンプルなフレームワークです．</p>
+
+<p>例えばHello Worldならば次のコードだけでできあがりです．</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>require <span class="string"><span class="delimiter">'</span><span class="content">sinatra</span><span class="delimiter">'</span></span>
+
+get <span class="string"><span class="delimiter">'</span><span class="content">/</span><span class="delimiter">'</span></span> <span class="keyword">do</span>
+  <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, world!</span><span class="delimiter">&quot;</span></span>
+<span class="keyword">end</span>
+</pre></div>
+</div>
+</div>
+
+<p>魔法のようにかんたんですね！</p>
+
+<p>しかし「どうしてこれで動くのか」を知っている人は比較的少ないのではないでしょうか．</p>
+
+<p>気になるSinatraのソースコードを読んでみましょう．</p>
+
+<h2 id="classic-style--modular-application">Classic Style と Modular Application</h2>
+<p>ところでSinatraにはクラスを使ったModular Applicationという書き方があるのを知っていますか？ Hello WorldはModular Applicationではこのようになります</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>require <span class="string"><span class="delimiter">'</span><span class="content">sinatra/base</span><span class="delimiter">'</span></span>
+
+<span class="keyword">class</span> <span class="class">MyApp</span> &lt; <span class="constant">Sinatra</span>::<span class="constant">Base</span>
+  get <span class="string"><span class="delimiter">'</span><span class="content">/</span><span class="delimiter">'</span></span> <span class="keyword">do</span>
+    <span class="string"><span class="delimiter">'</span><span class="content">Hello, world!</span><span class="delimiter">'</span></span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre></div>
+</div>
+</div>
+
+<p>Classic Style(冒頭のシンプルな書き方)と比較するとrequireしているファイルが異なることに注目です．</p>
+
+<h3 id="libsinatrarb">lib/sinatra.rb</h3>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>libdir = <span class="constant">File</span>.dirname(<span class="predefined-constant">__FILE__</span>)
+<span class="global-variable">$LOAD_PATH</span>.unshift(libdir) <span class="keyword">unless</span> <span class="global-variable">$LOAD_PATH</span>.include?(libdir)
+
+require <span class="string"><span class="delimiter">'</span><span class="content">sinatra/base</span><span class="delimiter">'</span></span>
+require <span class="string"><span class="delimiter">'</span><span class="content">sinatra/main</span><span class="delimiter">'</span></span>
+
+enable <span class="symbol">:inline_templates</span>
+</pre></div>
+</div>
+</div>
+
+<p><code>require 'sinatra'</code>で呼ばれるのはこのファイルです．</p>
+
+<p>この中でも<code>require 'sinatra/base'</code>していることがわかりますね
+つまり</p>
+
+<p><strong>Classic Style = Modular Application + α</strong></p>
+
+<p>ということです．</p>
+
+<p>この+αが<code>sinatra/main.rb</code>と<code>sinatra/base.rb</code>の後ろの方にあります</p>
+
+<h3 id="libsinatramainrb">lib/sinatra/main.rb</h3>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>require <span class="string"><span class="delimiter">'</span><span class="content">sinatra/base</span><span class="delimiter">'</span></span>
+
+<span class="keyword">module</span> <span class="class">Sinatra</span>
+  <span class="keyword">class</span> <span class="class">Application</span> &lt; <span class="constant">Base</span>
+
+    <span class="comment">### $0 == __FILE__ のような比較をしている</span>
+    <span class="comment">### `ruby helloworld.rb` のように直接実行されていたら :run がtrueになる</span>
+    set <span class="symbol">:app_file</span>, caller_files.first || <span class="global-variable">$0</span>
+    set <span class="symbol">:run</span>, <span class="constant">Proc</span>.new { <span class="constant">File</span>.expand_path(<span class="global-variable">$0</span>) == <span class="constant">File</span>.expand_path(app_file) }
+
+    <span class="keyword">if</span> run? &amp;&amp; <span class="predefined-constant">ARGV</span>.any?
+      <span class="comment">### 直接実行された場合のオプションの処理とか</span>
+      <span class="comment">### (中略)</span>
+  <span class="keyword">end</span>
+
+  <span class="comment">### :runがtrueならば終了時にSinatra::Applicationを実行</span>
+  at_exit { <span class="constant">Application</span>.run! <span class="keyword">if</span> <span class="global-variable">$!</span>.nil? &amp;&amp; <span class="constant">Application</span>.run? }
+<span class="keyword">end</span>
+
+include <span class="constant">Sinatra</span>::<span class="constant">Delegator</span>
+</pre></div>
+</div>
+</div>
+
+<h3 id="libsinatrabaserb">lib/sinatra/base.rb</h3>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>......
+
+  <span class="keyword">module</span> <span class="class">Delegator</span> <span class="comment">#:nodoc:</span>
+    <span class="comment">###</span>
+    <span class="comment">### Kernel#hoge を Sinatra::Aplication#hoge に移譲する</span>
+    <span class="comment">###</span>
+    <span class="keyword">def</span> <span class="predefined-constant">self</span>.<span class="function">delegate</span>(*methods)
+      methods.each <span class="keyword">do</span> |method_name|
+        define_method(method_name) <span class="keyword">do</span> |*args, &amp;block|
+          <span class="keyword">return</span> <span class="keyword">super</span>(*args, &amp;block) <span class="keyword">if</span> respond_to? method_name
+          <span class="constant">Delegator</span>.target.send(method_name, *args, &amp;block)
+        <span class="keyword">end</span>
+        private method_name
+      <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+    <span class="comment">### **ここ重要**</span>
+    delegate <span class="symbol">:get</span>, <span class="symbol">:patch</span>, <span class="symbol">:put</span>, <span class="symbol">:post</span>, <span class="symbol">:delete</span>, <span class="symbol">:head</span>, <span class="symbol">:options</span>, <span class="symbol">:template</span>, <span class="symbol">:layout</span>,
+             <span class="symbol">:before</span>, <span class="symbol">:after</span>, <span class="symbol">:error</span>, <span class="symbol">:not_found</span>, <span class="symbol">:configure</span>, <span class="symbol">:set</span>, <span class="symbol">:mime_type</span>,
+             <span class="symbol">:enable</span>, <span class="symbol">:disable</span>, <span class="symbol">:use</span>, <span class="symbol">:development?</span>, <span class="symbol">:test?</span>, <span class="symbol">:production?</span>,
+             <span class="symbol">:helpers</span>, <span class="symbol">:settings</span>
+
+    <span class="keyword">class</span> &lt;&lt; <span class="class">self</span>
+      attr_accessor <span class="symbol">:target</span>
+    <span class="keyword">end</span>
+
+    <span class="predefined-constant">self</span>.target = <span class="constant">Application</span>
+  <span class="keyword">end</span>
+
+.......
+</pre></div>
+</div>
+</div>
+
+<p>Classic Styleではトップレベルで直接<code>get '/' do</code>などと書けていましたが，実際にはSinatra::ApplicationというModular Applicationを定義しています．</p>
+
+<p>そしてトップレベルでgetなどのメソッドを呼ぶとそれはSinatra::Applicationのインスタンスへのメソッド呼び出しとなるわけです．</p>
+
+<p>Sinatra::Applicationはconfig.ruを書くときに少しだけ出てきますね</p>
+
+<p>config.ru</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>require <span class="string"><span class="delimiter">'</span><span class="content">./app.rb</span><span class="delimiter">'</span></span>
+
+<span class="comment"># Classic Styleのとき</span>
+run <span class="constant">Sinatra</span>::<span class="constant">Application</span>
+
+<span class="comment"># Modular Applicationのとき</span>
+run <span class="constant">MyApp</span>
+</pre></div>
+</div>
+</div>
+
+<p><br /></p>
+
+<h2 id="section">今回のまとめ</h2>
+<ul>
+  <li>Modular ApplicationがSinatraを使う基本</li>
+  <li>Classic Styleは実はSinatra::ApplicationというModular Applicationへの移譲になっている．</li>
+</ul>
+
+<p>Classic StyleのHello Worldは実際にはこう書くのと大体同じです．</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre>require <span class="string"><span class="delimiter">'</span><span class="content">sinatra/base</span><span class="delimiter">'</span></span>
+
+<span class="keyword">class</span> <span class="class">Sinatra::Application</span> &lt; <span class="constant">Sinatra</span>::<span class="constant">Base</span>
+  get <span class="string"><span class="delimiter">'</span><span class="content">/</span><span class="delimiter">'</span></span> <span class="keyword">do</span>
+    <span class="string"><span class="delimiter">'</span><span class="content">Hello, world!</span><span class="delimiter">'</span></span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+run <span class="constant">Sinatra</span>::<span class="constant">Application</span> <span class="keyword">if</span> <span class="global-variable">$0</span> == <span class="predefined-constant">__FILE__</span>
+</pre></div>
+</div>
+</div>
+
+<p>次回:<a href="http://moji.yayugu.net/sinatra02">Sinatra超完全解説 (2) テンプレート</a></p>
+
+  </div>
+  <div class="admin-footer">
+    
+  </div>
+  <!-- X:S ZenBackWidget --><script type="text/javascript">document.write(unescape("%3Cscript")+" src='http://widget.zenback.jp/?base_uri=http%3A//moji.yayugu.net&nsid=93200937694265985%3A%3A100854354667410348&rand="+Math.ceil((new Date()*1)*Math.random())+"' type='text/javascript'"+unescape("%3E%3C/script%3E"));</script><!-- X:E ZenBackWidget -->
+
+  <div class="comment-wrap">
+    
+
+    <div id="comment_form">
+      <h4 class="comment">コメント</h4>
+<form action="/sinatra01" id="comment_form" method="post">
+  <script type="text/javascript">
+    //<![CDATA[
+      document.write('<input type="hidden" name="check" value="check" />');
+    //]]>
+  </script>
+  <p>
+    <label for="comment_name">名前</label>
+    <br />
+    <input id="comment_name" name="comment[name]" type="text" />
+  </p>
+  <p>
+    <label for="comment_homepage">ホームページ</label>
+    (オプション)
+    <br />
+    <input id="comment_homepage" name="comment[homepage]" type="text" />
+  </p>
+  <p>
+    <label for="comment_body">本文</label>
+    <br />
+    <textarea cols="40" id="comment_body" name="comment[body]" rows="10"></textarea>
+  </p>
+  <input class="button" type="submit" value="コメントする" />
+</form>
+
+    </div>
+  </div>
+</div>
+
+      </div>
+    </div>
+    <div id="footer">
+      <div>
+        
+        <span><a href="/tags/ruby/">ruby</a></span>
+        
+        <span><a href="/tags/sinatra/">sinatra</a></span>
+        
+        <span><a href="/tags/本/">本</a></span>
+        
+        <span><a href="/tags/本棚/">本棚</a></span>
+        
+      </div>
+      <div>
+        
+        <span><a href="/2012/01/">2012/01</a></span>
+        
+        <span><a href="/2011/12/">2011/12</a></span>
+        
+        <span><a href="/2011/11/">2011/11</a></span>
+        
+      </div>
+      <div>
+        <a href="/index.atom">Feed</a>
+      </div>
+      <form action="/search/" method="get">
+        <input type="text" name="query" class="text_field" />
+        <button class="submit" onclick="submit()">Search</button>
+      </form>
+      <div class="poweredby">powered by <a href="http://github.com/komagata/lokka">Lokka</a></div>
+    </div>
+    
+  </body>
+</html>
+

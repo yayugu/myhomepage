@@ -1,0 +1,24 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv="Content-Language" content="ja">
+<link href="<%= @base_url %>/index.atom" rel="alternate" title="<%= @blog_title %>" type="application/atom+xml" />
+<link rel="stylesheet" href="../main.css" type="text/css" media="all" />
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-27322025-1']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+<title><%= title %></title>
+<body>
+<h1><%= h1 %></h1>
+<p><%= date.strftime('%Y-%m-%d') %></p>
+<%= body %>
+<hr style="margin-top: 15px; margin-bottom: 3px;"/>
+<a href="<%= @base_url %>">top</a> <a href="<%= @base_url %>/index.atom">rss</a> 
+</body>
+</html>

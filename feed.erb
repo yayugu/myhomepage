@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>http://moji.yayugu.net/</id>
+  <title><%= @blog_title %></title>
+  <updated><%= last_updated.rfc3339 %></updated>
+  <link type="text/html" rel="alternate" href="<%= @base_url %>"/>
+  <link type="application/atom+xml" ref="self" href="<%= @base_url %>/index.atom"/>
+  <% @articles.each do |article| %>
+    <entry>
+      <id><%= article.updated.rfc3339.downcase %></id>
+      <title><%= article.title %></title>
+      <updated><%= article.updated.rfc3339 %></updated>
+      <link type="html" rel="alternate" href="<%= @base_url %>/articles/<%= article.url %>"/>
+      <content type="html"><%== article.body %></content>
+    </entry>
+  <% end %>
+</feed>

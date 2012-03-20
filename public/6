@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="application/html; charset=UTF-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta http-equiv="Content-Script-Type" content="text/javascript" />
+    <title>近況報告　未踏スパクリとかGREEとか - やゆぐ</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link href="/index.atom" rel="alternate" title="近況報告　未踏スパクリとかGREEとか" type="application/atom+xml" />
+    <link rel="stylesheet" href="/theme/one-column-neue/style.css" type="text/css" />
+    <script type="text/javascript">var _gaq=_gaq||[];_gaq.push(['_setAccount','UA-27322025-1']);_gaq.push(['_trackPageview']);(function(){var ga=document.createElement('script');ga.type='text/javascript';ga.async=true;ga.src=('https:'==document.location.protocol?'https://ssl':'http://www')+'.google-analytics.com/ga.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(ga,s);})();</script>
+  </head>
+  <body>
+    <div id="header">
+      <h1><a href="/">やゆぐ</a></h1>
+      <span class="description">組版・タイポグラフィ・Web<br/>
+Twitter: <a href="http://twitter.com/yayugu">@yayugu</a><br/>
+旧ブログ: <a href="http://d.hatena.ne.jp/yayugu">yayuguのにっき</a></span>
+    </div>
+    <div id="content">
+      <div id="main">
+        <div class="section article">
+  <div class="header">
+    <h1>近況報告　未踏スパクリとかGREEとか</h1>
+    <div class="info">
+      <span class="date">2011/12/30 22:13:48</span>
+      
+      
+    </div>
+  </div>
+  <div class="body">
+    <p>最近してなかったので近況報告</p>
+
+<h2 id="section">スパクリ</h2>
+<p>2010年度未踏ユースのスーパークリエータに認定していただきました．</p>
+
+<p><a href="http://www.ipa.go.jp/about/press/20111215.html">http://www.ipa.go.jp/about/press/20111215.html</a></p>
+
+<p>正直びっくりしてます．スーパークリエータの称号に相応しいプログラマになれるよう頑張ります．</p>
+
+<p>あと組版関係のアウトプットをもっとしたい．</p>
+
+<h2 id="gree">GREE</h2>
+<p>高専卒業したら4月からGREEに新卒として入ります．</p>
+
+<p>今一番すごいと思っている会社に入り活躍できることが楽しみです．</p>
+
+  </div>
+  <div class="admin-footer">
+    
+  </div>
+  <!-- X:S ZenBackWidget --><script type="text/javascript">document.write(unescape("%3Cscript")+" src='http://widget.zenback.jp/?base_uri=http%3A//moji.yayugu.net&nsid=93200937694265985%3A%3A100854354667410348&rand="+Math.ceil((new Date()*1)*Math.random())+"' type='text/javascript'"+unescape("%3E%3C/script%3E"));</script><!-- X:E ZenBackWidget -->
+
+  <div class="comment-wrap">
+    
+
+    <div id="comment_form">
+      <h4 class="comment">コメント</h4>
+<form action="/6" id="comment_form" method="post">
+  <script type="text/javascript">
+    //<![CDATA[
+      document.write('<input type="hidden" name="check" value="check" />');
+    //]]>
+  </script>
+  <p>
+    <label for="comment_name">名前</label>
+    <br />
+    <input id="comment_name" name="comment[name]" type="text" />
+  </p>
+  <p>
+    <label for="comment_homepage">ホームページ</label>
+    (オプション)
+    <br />
+    <input id="comment_homepage" name="comment[homepage]" type="text" />
+  </p>
+  <p>
+    <label for="comment_body">本文</label>
+    <br />
+    <textarea cols="40" id="comment_body" name="comment[body]" rows="10"></textarea>
+  </p>
+  <input class="button" type="submit" value="コメントする" />
+</form>
+
+    </div>
+  </div>
+</div>
+
+      </div>
+    </div>
+    <div id="footer">
+      <div>
+        
+        <span><a href="/tags/ruby/">ruby</a></span>
+        
+        <span><a href="/tags/sinatra/">sinatra</a></span>
+        
+        <span><a href="/tags/本/">本</a></span>
+        
+        <span><a href="/tags/本棚/">本棚</a></span>
+        
+      </div>
+      <div>
+        
+        <span><a href="/2012/01/">2012/01</a></span>
+        
+        <span><a href="/2011/12/">2011/12</a></span>
+        
+        <span><a href="/2011/11/">2011/11</a></span>
+        
+      </div>
+      <div>
+        <a href="/index.atom">Feed</a>
+      </div>
+      <form action="/search/" method="get">
+        <input type="text" name="query" class="text_field" />
+        <button class="submit" onclick="submit()">Search</button>
+      </form>
+      <div class="poweredby">powered by <a href="http://github.com/komagata/lokka">Lokka</a></div>
+    </div>
+    
+  </body>
+</html>
+

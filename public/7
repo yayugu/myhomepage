@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="application/html; charset=UTF-8" />
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta http-equiv="Content-Script-Type" content="text/javascript" />
+    <title>Rubyで - mapBetween - 配列の隣接する2項にそれぞれ演算を施した配列 - やゆぐ</title>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <link href="/index.atom" rel="alternate" title="Rubyで - mapBetween - 配列の隣接する2項にそれぞれ演算を施した配列" type="application/atom+xml" />
+    <link rel="stylesheet" href="/theme/one-column-neue/style.css" type="text/css" />
+    <script type="text/javascript">var _gaq=_gaq||[];_gaq.push(['_setAccount','UA-27322025-1']);_gaq.push(['_trackPageview']);(function(){var ga=document.createElement('script');ga.type='text/javascript';ga.async=true;ga.src=('https:'==document.location.protocol?'https://ssl':'http://www')+'.google-analytics.com/ga.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(ga,s);})();</script>
+  </head>
+  <body>
+    <div id="header">
+      <h1><a href="/">やゆぐ</a></h1>
+      <span class="description">組版・タイポグラフィ・Web<br/>
+Twitter: <a href="http://twitter.com/yayugu">@yayugu</a><br/>
+旧ブログ: <a href="http://d.hatena.ne.jp/yayugu">yayuguのにっき</a></span>
+    </div>
+    <div id="content">
+      <div id="main">
+        <div class="section article">
+  <div class="header">
+    <h1>Rubyで - mapBetween - 配列の隣接する2項にそれぞれ演算を施した配列</h1>
+    <div class="info">
+      <span class="date">2012/01/04 22:04:19</span>
+      
+      
+      <span class="tags"><ul class="tags"><li class="tag"><a href="/tags/ruby/">ruby</a></li></ul></span>
+      
+    </div>
+  </div>
+  <div class="body">
+    <p><a href="http://blog.livedoor.jp/dankogai/archives/51763038.html">404 Blog Not Found:algorithm - mapBetween - 配列の隣接する2項にそれぞれ演算を施した配列</a></p>
+
+<p>そういえばよくありますね．</p>
+
+<p>Rubyだとどうだろうと思い昔書いたソースコードみたらひどかった</p>
+
+<p>さすがにこれはないよね．</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="keyword">def</span> <span class="function">sum_between</span>(array)
+  result = []
+  node.reduce <span class="keyword">do</span> |a, b|
+    result &lt;&lt; a + b
+    b
+  <span class="keyword">end</span>
+  result
+<span class="keyword">end</span>
+</pre></div>
+</div>
+</div>
+
+<p>Rubyにはeach_consというメソッドがあるのでそれを使うとこう書き直せます</p>
+
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="keyword">class</span> <span class="class">Array</span>
+  <span class="keyword">def</span> <span class="function">map_between</span>
+    <span class="predefined-constant">self</span>.each_cons(<span class="integer">2</span>).map{|a, b| <span class="keyword">yield</span>(a, b)}
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+&gt; [<span class="integer">1</span>, <span class="integer">2</span>, <span class="integer">3</span>, <span class="integer">4</span>].map_between{|a, b| a + b}
+=&gt; [<span class="integer">3</span>, <span class="integer">5</span>, <span class="integer">7</span>]
+</pre></div>
+</div>
+</div>
+
+<p>mapのブロックがa, bの2つの引数を受け取っているように見えるのは配列を展開しているだけ．
+a, b = [1, 2] みたいな．</p>
+
+<p>まあわざわざメソッド書くほどのものでもないよね．</p>
+
+<p>Rubyの標準メソッド便利っすね！</p>
+
+  </div>
+  <div class="admin-footer">
+    
+  </div>
+  <!-- X:S ZenBackWidget --><script type="text/javascript">document.write(unescape("%3Cscript")+" src='http://widget.zenback.jp/?base_uri=http%3A//moji.yayugu.net&nsid=93200937694265985%3A%3A100854354667410348&rand="+Math.ceil((new Date()*1)*Math.random())+"' type='text/javascript'"+unescape("%3E%3C/script%3E"));</script><!-- X:E ZenBackWidget -->
+
+  <div class="comment-wrap">
+    
+
+    <div id="comment_form">
+      <h4 class="comment">コメント</h4>
+<form action="/7" id="comment_form" method="post">
+  <script type="text/javascript">
+    //<![CDATA[
+      document.write('<input type="hidden" name="check" value="check" />');
+    //]]>
+  </script>
+  <p>
+    <label for="comment_name">名前</label>
+    <br />
+    <input id="comment_name" name="comment[name]" type="text" />
+  </p>
+  <p>
+    <label for="comment_homepage">ホームページ</label>
+    (オプション)
+    <br />
+    <input id="comment_homepage" name="comment[homepage]" type="text" />
+  </p>
+  <p>
+    <label for="comment_body">本文</label>
+    <br />
+    <textarea cols="40" id="comment_body" name="comment[body]" rows="10"></textarea>
+  </p>
+  <input class="button" type="submit" value="コメントする" />
+</form>
+
+    </div>
+  </div>
+</div>
+
+      </div>
+    </div>
+    <div id="footer">
+      <div>
+        
+        <span><a href="/tags/ruby/">ruby</a></span>
+        
+        <span><a href="/tags/sinatra/">sinatra</a></span>
+        
+        <span><a href="/tags/本/">本</a></span>
+        
+        <span><a href="/tags/本棚/">本棚</a></span>
+        
+      </div>
+      <div>
+        
+        <span><a href="/2012/01/">2012/01</a></span>
+        
+        <span><a href="/2011/12/">2011/12</a></span>
+        
+        <span><a href="/2011/11/">2011/11</a></span>
+        
+      </div>
+      <div>
+        <a href="/index.atom">Feed</a>
+      </div>
+      <form action="/search/" method="get">
+        <input type="text" name="query" class="text_field" />
+        <button class="submit" onclick="submit()">Search</button>
+      </form>
+      <div class="poweredby">powered by <a href="http://github.com/komagata/lokka">Lokka</a></div>
+    </div>
+    
+  </body>
+</html>
+
