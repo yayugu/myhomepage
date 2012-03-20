@@ -9,7 +9,5 @@
 
 おれのホームページのためのツールです
 
-rakeするといろいろファイルが作られてrsyncとかでサーバと同期するといいいい感じ
-です
-<a
-href="http://github.com/yayugu/myhomepage">http://github.com/yayugu/myhomepage</a>
+rakeするといろいろファイルが作られてrsyncとかでサーバと同期するといいいい感じです
+<a href="http://github.com/yayugu/myhomepage">http://github.com/yayugu/myhomepage</a>
