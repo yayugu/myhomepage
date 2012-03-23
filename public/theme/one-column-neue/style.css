@@ -1,0 +1,186 @@
+/*
+Name: One Column Neue
+Description: Simple one-column theme.
+URL: http://lokka.org/
+Author: yayugu
+Author URL: http://moji.yayugu.net/
+Version: 0.0.2
+*/
+/*
+Skin Name: One Column Neue
+Author: yayugu
+*/
+#header {
+  width: 850px;
+  margin-left: auto;
+  margin-right: auto; }
+  #header h1 {
+    display: inline;
+    font-size: 1em;
+    margin-right: 1em; }
+
+#footer {
+  width: 850px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 0.8em;
+  text-align: right; }
+  #footer a:link, #footer a:visited, #footer a:hover {
+    color: #444444;
+    text-decoration: none; }
+  #footer a:visited {
+    color: #666666;
+    text-decoration: none; }
+
+body {
+  background: #FAFAFA;
+  color: #444444;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-style: solid;
+  border-color: #777777;
+  border-width: 8px 0; }
+
+.article {
+  margin-top: 3em;
+  margin-bottom: 3em; }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Palatino Linotype", "Book Antiqua", Palatino, FreeSerif, serif; }
+  h1 a:link, h1 a:visited, h1 a:hover, h2 a:link, h2 a:visited, h2 a:hover, h3 a:link, h3 a:visited, h3 a:hover, h4 a:link, h4 a:visited, h4 a:hover, h5 a:link, h5 a:visited, h5 a:hover, h6 a:link, h6 a:visited, h6 a:hover {
+    color: #444444;
+    text-decoration: none; }
+  h1 a:visited, h2 a:visited, h3 a:visited, h4 a:visited, h5 a:visited, h6 a:visited {
+    color: #666666;
+    text-decoration: none; }
+
+h1 {
+  font-size: 3em; }
+
+#main {
+  width: 850px;
+  margin-left: auto;
+  margin-right: auto; }
+
+.header {
+  font-size: 0.8em; }
+  .header h1 {
+    margin-bottom: 5px; }
+
+.admin-footer {
+  font-size: 0.5em; }
+
+.comment-wrap {
+  margin-top: 8em; }
+
+/* tags */
+ul.tags {
+  display: inline;
+  list-style: none;
+  list-style-type: none;
+  padding-left: 0; }
+  ul.tags li {
+    display: inline;
+    margin-right: 0.3em; }
+    ul.tags li a:link, ul.tags li a:visited, ul.tags li a:hover {
+      color: #444444;
+      text-decoration: none; }
+    ul.tags li a:visited {
+      color: #666666;
+      text-decoration: none; }
+
+/* link */
+a:link {
+  color: #000; }
+
+a:visited {
+  color: #333; }
+
+a:hover {
+  color: #555;
+  text-decoration: none; }
+
+a:focus,
+textarea:focus,
+input:focus {
+  outline: 1px solid #aaa; }
+
+/* code & syntax highlight */
+pre {
+  padding: 15px 20px;
+  background-color: #232323;
+  font-size: 13px;
+  font-family: monospace;
+  line-height: 1.20;
+  color: #E6E0DB;
+  overflow: auto;
+  border-radius: 6px;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px; }
+
+.CodeRay {
+  /* html attribute */
+  /* comment */
+  /* escaped character */
+  /* class */
+  /* constant */
+  /* float */
+  /* function */
+  /* global variable */
+  /* integer */
+  /* inline code */
+  /* instance variable */
+  /* doctype */
+  /* keyword */
+  /* regex */
+  /* string */
+  /* symbol */
+  /* html tag */
+  /* boolean */ }
+  .CodeRay .an {
+    color: #E7BE69; }
+  .CodeRay .c {
+    color: #CCA388; }
+  .CodeRay .ch {
+    color: #509E4F; }
+  .CodeRay .cl {
+    color: #FFF; }
+  .CodeRay .co {
+    color: #FFF; }
+  .CodeRay .float,
+  .CodeRay .fl {
+    color: #A4C260; }
+  .CodeRay .fu {
+    color: #FFC56D; }
+  .CodeRay .gv {
+    color: #D0CFFE; }
+  .CodeRay .integer,
+  .CodeRay .i {
+    color: #A4C260; }
+  .CodeRay .il {
+    background: #151515; }
+  .CodeRay .iv {
+    color: #D0CFFE; }
+  .CodeRay .pp {
+    color: #E7BE69; }
+  .CodeRay .keyword,
+  .CodeRay .r {
+    color: #CB7832; }
+  .CodeRay .regex,
+  .CodeRay .rx {
+    color: #A4C260; }
+  .CodeRay .string,
+  .CodeRay .s {
+    color: #A4C260; }
+  .CodeRay .sy {
+    color: #6C9CBD; }
+  .CodeRay .ta {
+    color: #E7BE69; }
+  .CodeRay .pc {
+    color: #6C9CBD; }
+
+.zenback {
+  margin-top: 8em; }
+
+#zenback-ads {
+  display: none !important; }
