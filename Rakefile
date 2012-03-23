@@ -21,4 +21,5 @@ task :generate do
   end
   File.write('public/index.atom', g.feed)
   File.write('public/index.html', g.top)
+  puts "Generatied."
 end
