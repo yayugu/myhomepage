@@ -27,3 +27,4 @@ apache + passenger が一番楽．どうせnginxが生きるほどの大量ア�
 <h2>というか</h2>
 Ruby自体文献が少ない．おすすめしない．PHPのが楽
 
+
