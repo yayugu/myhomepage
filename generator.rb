@@ -16,7 +16,7 @@ class Generator
     h1 = lines.shift
     title = "#{h1} -- #{@blog_title}"
     body = lines.join("<br />\n")
-    body.gsub!(%r{(><br />)}, '>')
+    body.gsub!(%r{((>|\\)<br />)}, '>')
     @articles.push Article.new(h1, body, date, url)
 
     @template.result(binding())
