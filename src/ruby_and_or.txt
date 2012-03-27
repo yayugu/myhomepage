@@ -22,7 +22,6 @@ hoge or foo = bar</code></pre>
 <h2>ちなみに</h2>
 Perlでの使用例を探してみた．
 <pre><code>open(DATAFILE, "data.txt") or die("error :$!");</code></pre>
-
 or dieとか…すごい言語感覚
 
 
