@@ -1,7 +1,6 @@
 Rubyのand/or演算子の使い道
 
 <a href="http://www.slideshare.net/drecom/edgerails2">実録！Railsのはまりポイント10選</a>というスライドをみていたら and/or が &amp;&amp;/|| と優先度が違うせいでハマるなどと言われている．
-
 ただパース時の優先順位が低いだけなのに落とし穴とか言われてしまい，かわいそうになってきたので使い道を考えてみた．
 
 <h2>後置if/unlessの代わり</h2>
