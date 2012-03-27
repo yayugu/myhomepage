@@ -13,10 +13,10 @@ end\
 # 後置if\
 foo = bar if hoge\
 \
-# or\
-hoge or foo = bar</code></pre>
+# and\
+hoge and foo = bar</code></pre>
 
-後置if/unlessには条件文が後ろに来るのでそれにより<strike>コピペがめんどくさい</strike>，意味がわかりづらくなる場合がある．そういう時にor/andを使うと条件文を先に持ってくることができる．
+後置if/unlessには条件文が後ろに来るのでそれにより<strike>コピペがめんどくさい</strike>，意味がわかりづらくなる場合がある．そういう時にand/orを使うと条件文を先に持ってくることができる．
 =などの演算子が含まれていてもそれらよりも優先順位が低いため<code>(hoge) or (foo = bar)</code>のように解釈され，余計なカッコも必要にならない．
 
 <h2>ちなみに</h2>
