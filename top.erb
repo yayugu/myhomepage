@@ -16,7 +16,7 @@
 </script>
 <body>
 <h1><%= @blog_title %></h1>
-<p>いろいろ書いていく．Twitter→<a href="http://twitter.com/yayugu">@yayugu</a></p>
+<p>いろいろ書いていく．Twitter→<a href="http://twitter.com/yayugu">@yayugu</a> 旧ブログ→<a href="http://d.hatena.ne.jp/yayugu">yayuguのにっき</a></p>
 <p>記事一覧</p>
 <% @articles.each do |article| %>
   ・<a href="<%= @base_url %>/articles/<%= article.url %>"><%= article.title %></a><br />
