@@ -1,0 +1,23 @@
+Firefox 11とかでXUL/migemoをインストールする方法
+
+注：vimperator用
+
+新しい環境でXUL/migemoをインストールしようとしたら入らなくてちょっと試行錯誤したのでメモ
+addon compatibility reporterではダメだったので
+
+1. http://piro.sakura.ne.jp/xul/_xulmigemo.html からxulmigemo.xpiをダウンロード
+
+2. \
+<pre><code>&gt; unzip xulmigemo.xpi -d xulmigemo \
+</code></pre>
+
+3. install.rdfを開いてFirefoxのmaxVersionを15.0とか大きめの値に書き換え
+
+4. \
+<pre><code>&gt; cd xulmigemo \
+&gt; zip -r xulmigemo.xpi * \
+</code></pre>
+
+5. できたファイルをFirefoxにドラッグアンドドロップ
+
+もう少し楽な方法があった気がしたんだけどなあ 
