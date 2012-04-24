@@ -2,3 +2,4 @@ public/articles/*
 public/index.atom
 public/index.html
 do-rsync.sh
+.DS_Store
